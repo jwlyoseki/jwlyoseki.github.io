@@ -1,0 +1,189 @@
+<!DOCTYPE html>   
+<html lang="zh-CN">   
+<head> 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  
+    <meta charset="UTF-8">   
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">   
+    <title>Yoseki | Song and Sincerity</title>   
+    <!-- 谷歌字体库 -->   
+    <link rel="icon" href="images/logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Montserrat:wght@300;400;600&family=Pinyon+Script&display=swap" rel="stylesheet">   
+    <link rel="stylesheet" href="style.css">   
+</head> 
+
+<!-- 回到顶部按钮（纯箭头版） -->
+<div id="backToTop" class="back-to-top">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+</div>
+
+<body>   
+    
+    <!-- 背景装饰大字 (暗纹) -->
+    <div class="bg-decoration">Yoseki</div>   
+    
+    <!-- ==========================================
+         头部区块：包含大标题、侧边文字和中央头像
+         ========================================== -->
+    <header class="masthead">   
+        <!-- 顶部信息行 -->
+        <div class="masthead-top">   
+            <span>Story Designer</span>   
+            <span class="accent-text">Est. 2025</span>   
+        </div>   
+
+        <!-- 主标题 (Archive 设为斜体增加设计感) -->
+        <h1 class="main-title">Love Design <span class="italic">yoseki</span></h1>   
+
+        <!-- 底部信息行：文字贴线，头像悬浮 -->
+        <div class="masthead-bottom">  
+            <!-- 左侧分类标签 -->
+            <span class="meta-label">MUSIC / ACTIVITY / REWARDS</span>  
+            
+            <!-- 中央头像容器 (受 CSS 绝对定位控制) -->
+            <div class="avatar-breathing-wrap">  
+                <!-- 如果你的图片放在 images 文件夹，路径就是 images/文件名.png -->
+                <img src="images/头像.png" alt="Logo" class="main-avatar">  
+            </div>  
+
+            <!-- 右侧版本标签 -->
+            <span class="meta-label">VOL. 950</span>  
+        </div>  
+    </header>   
+    
+    <!-- 主体内容 -->
+    <main class="container">   
+        
+       <!-- ==========================================  
+             模块一：歌单区域 (由 JS 动态生成内容)  
+             ========================================== -->  
+        <section class="section">    
+            <div class="section-header">    
+                <h2 class="serif-title">Curated Playlist <span>by yoseki</span></h2>     
+                <!-- 搜索和筛选控制区 -->     
+                <div class="filter-controls">     
+                    <input type="text" id="searchInput" placeholder="搜索歌名/歌手">     
+                    
+                    <!-- 原有的类型筛选 -->
+                    <select id="genreFilter">     
+                        <option value="all">类型</option>     
+                        <option value="流行">流行</option>     
+                        <option value="R&B">R&B</option>     
+                        <option value="古风">古风</option>     
+                    </select>     
+
+                    <!-- 【新增】语言筛选 -->
+                    <select id="languageFilter">     
+                        <option value="all">语言</option>     
+                        <option value="中文">中文</option>     
+                        <option value="英语">英语</option>     
+                        <option value="日语">日语</option>     
+                        <option value="韩语">韩语</option>     
+                    </select>     
+                </div>    
+                  
+                  
+            </div>    
+            
+            <!-- 这里是统计面板 -->
+            <div id="stats-panel" style="margin-bottom: 20px; font-family: 'Montserrat', sans-serif; letter-spacing: 1px;">
+                <!-- 加载中提示 -->
+                Loading stats...
+            </div>
+
+            <!-- 歌单网格容器：JS会把生成的HTML塞到这里 -->    
+            <div class="song-grid pagination-container" id="songGrid"></div>    
+      
+            <!-- 分页按钮 -->    
+            <div class="pagination-controls">    
+                <button id="prevPage">Prev</button>    
+                <span id="pageInfo">Page 1 of 1</span>    
+                <button id="nextPage">Next</button>    
+            </div>    
+        </section>
+   
+        <!-- ==========================================
+             模块二：双列布局 (周计划 + 奖励卡片)
+             ========================================== -->
+        <div class="split-grid">   
+            <!-- 左侧：周计划与轮播图 -->   
+            <section class="events-module">   
+                <h2 class="serif-title">Weekly <span class="script-font">Schedule</span></h2>  
+                
+                <!-- 7天计划卡片容器 -->  
+                <div class="week-grid" id="weekSchedule"></div>   
+  
+                <!-- 轮播图区块 -->  
+                <div class="carousel-container">  
+                    <div class="carousel-track" id="carouselTrack">  
+                        <!-- 这里的图片可以替换为你自己的本地路径 -->
+                        <img src="images/deard.png" alt="1">  
+                        <img src="images/封面.png" alt="2">  
+                        <img src="images/向日葵.png" alt="3">
+                        <img src="images/爱情讯息.png" alt="4">  
+                    </div>  
+                    <!-- 轮播图下方的圆点 -->
+                    <div class="carousel-pagination" id="carouselNav"></div>  
+                </div>  
+            </section>  
+   
+            <!-- 右侧：俱乐部回馈卡片 (横向滚动) -->   
+            <section class="rewards-module">   
+                <h2 class="serif-title">Club <span>Rewards</span></h2>   
+                <div class="vip-scroll-viewer">   
+                    <div class="vip-cards-container" id="vipCardsContainer">   
+                        <!-- 这里由脚本自动填充 15 张卡片 -->   
+                    </div>   
+                </div>   
+            </section>   
+        </div>  
+  
+        <!-- ==========================================
+             模块三：留言板
+             ========================================== -->
+        <section class="feedback-module" style="margin-top: 60px;">  
+            <h2 class="serif-title">Audience <span>Comments</span></h2>  
+            <div class="liked-board-container">  
+                <!-- 留言输入框区 -->  
+                <div class="message-input-area">  
+                    <textarea id="msgInput" placeholder="在这里可以给小卷留言噢..."></textarea>  
+                    <div class="input-footer">  
+                        <div class="emoji-picker" id="emojiPicker"></div>  
+                        <button class="post-btn" id="postMsg">POST</button>  
+                    </div>  
+                </div>  
+                  
+                <!-- 留言展示列表 -->  
+                <div class="message-list" id="messageList">  
+                    <div class="msg-item">  
+                        <p class="msg-text">Welcome to The Yoseki space. Feel free to leave a message.</p>  
+                        <small>@Editor — Archive</small>  
+                    </div>  
+                </div>  
+            </div>  
+        </section>  
+    </main>   
+   
+    <!-- ==========================================
+         悬浮组件 (提问按钮及弹窗)
+         ========================================== -->
+    <div class="ask-btn" id="openAsk">提问箱</div>   
+   
+    <!-- 弹出层 (Modal) -->
+    <div class="modal" id="askModal">   
+        <div class="modal-body">   
+            <span class="close-modal" id="closeAsk">&times;</span>   
+            <h2 class="serif-title">亲爱的 想鈴卷</h2>   
+            <p class="script-font">Give voice to your inner thoughts...</p>   
+            <textarea id="askInput" placeholder="想对小卷说什么呢..."></textarea>   
+            <button class="submit-btn" id="sendAsk">SEND MESSAGE</button>   
+        </div>   
+    </div>   
+   
+    <!-- 复制成功的提示框 (Toast) -->   
+    <div id="toast" class="toast">已成功复制歌名!</div>   
+   
+    <script src="script.js"></script>   
+</body>   
+</html>
